@@ -5,13 +5,13 @@ int main()
 {
 	SYSTEM_POWER_STATUS powerStatus;
 
+	ULONG lastCharge = 0, batteryCapacity, batteryCharge;
+	LARGE_INTEGER perfStart, perfEnd;
 	uint64_t nsCount = 0;
 
 	WMI wmi;
 	if (wmi.init() && wmi.connect(L"ROOT\\WMI"))
 	{
-		ULONG lastCharge = 0, batteryCapacity, batteryCharge;
-		LARGE_INTEGER perfStart, perfEnd;
 		QueryPerformanceCounter(&perfStart);
 
 		while (!(GetKeyState(VK_ESCAPE) < 0))
@@ -23,6 +23,7 @@ int main()
 			{
 				nsCount = 0;
 
+				// https://stackoverflow.com/a/7785296
 				batteryCapacity = wmi.query(
 					L"FullChargedCapacity",
 					L"BatteryFullChargedCapacity").ulVal;
